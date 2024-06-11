@@ -1,5 +1,3 @@
-# Prerequisite:
-# 1. Install istioctl for istio installation
 # Secure .kube
 chmod go-r -R ~/.kube/
 
@@ -13,25 +11,17 @@ helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
 kubectl apply -f prometheus-nodeport.yaml -n monitoring
 kubectl apply -f grafana-nodeport.yaml -n monitoring
 
-# Istio
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-helm repo update
-kubectl create namespace istio-system
-helm install istio-base istio/base -n istio-system
-helm install istiod istio/istiod -n istio-system --wait
-helm install istio-ingressgateway istio/gateway -n istio-system
-kubectl label namespace default istio-injection=enabled
-
-# Istio - Prometeus integration
-kubectl apply -f istio-prometheus-operator.yaml
-
-# Jarger
+# Istio - Installation
+istioctl install -f istio-config.yaml -y
 kubectl apply -f jaeger.yaml
 
 # Jaeger NodePort Service (30002)
 kubectl apply -f jaeger-nodeport.yaml
 
-#Kiali
+# Istio - Prometheus Integration
+kubectl apply -f istio-prometheus-operator.yaml
+
+# Kiali
 helm repo add kiali https://kiali.org/helm-charts
 helm repo update
 helm install \
