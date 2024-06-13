@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 28,
+  "id": 29,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -40,6 +40,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -53,6 +54,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -83,7 +85,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -102,6 +104,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -135,6 +138,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -148,6 +152,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -197,6 +202,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -230,6 +236,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -243,6 +250,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -273,7 +281,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -292,6 +300,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -322,6 +331,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -335,6 +345,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -365,7 +376,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -384,6 +395,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -407,13 +419,17 @@
       "type": "timeseries"
     },
     {
-      "datasource": {},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -429,6 +445,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -477,6 +494,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -489,7 +507,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by (container) (increase(container_cpu_usage_milliseconds_total{container=~\"s.*[0-9].*\",service=\"prometheus-kube-prometheus-kubelet\"}[2m])/120)",
+          "expr": "sum by (container) (increase(container_cpu_usage_seconds_total{container=~\"s.*[0-9].*\",service=\"prometheus-kube-prometheus-kubelet\"}[2m])/120)",
           "interval": "",
           "legendFormat": "{{container}}",
           "range": true,
@@ -510,6 +528,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -523,6 +542,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -572,6 +592,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -595,13 +616,17 @@
       "type": "timeseries"
     },
     {
-      "datasource": {},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -617,6 +642,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -665,6 +691,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -677,7 +704,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by (node) (rate(container_cpu_usage_milliseconds_total{container!~\"POD|\" ,namespace!=\"\",namespace=\"default\",service=\"prometheus-kube-prometheus-kubelet\"}[2m]))",
+          "expr": "sum by (node) (rate(container_cpu_usage_seconds_total{container!~\"POD|\" ,namespace!=\"\",namespace=\"default\",service=\"prometheus-kube-prometheus-kubelet\"}[2m]))",
           "interval": "",
           "legendFormat": "{{node}}",
           "range": true,
@@ -688,7 +715,10 @@
       "type": "timeseries"
     },
     {
-      "datasource": {},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -696,6 +726,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -711,6 +742,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -760,6 +792,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -772,7 +805,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by (container) (increase(container_cpu_usage_milliseconds_total{container=~\"s.*[0-9].*\", image!~\"k8s.gcr.io/pause:3.5\",service=\"prometheus-kube-prometheus-kubelet\"}[2m])) / (120 * sum by (container) (kube_pod_container_resource_requests{container=~\"s[0-9].*\"}))",
+          "expr": "sum by (container) (increase(container_cpu_usage_seconds_total{container=~\"s.*[0-9].*\", service=\"prometheus-kube-prometheus-kubelet\"}[2m])) / (120 * sum by (container) (kube_pod_container_resource_requests{container=~\"s[0-9].*\"}))",
           "interval": "",
           "legendFormat": "{{container}}",
           "range": true,
@@ -783,13 +816,17 @@
       "type": "timeseries"
     },
     {
-      "datasource": {},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -803,6 +840,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -851,6 +889,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -863,7 +902,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(increase(container_cpu_usage_milliseconds_total{container!~\"POD|\" ,namespace!=\"\",namespace=\"default\",service=\"prometheus-kube-prometheus-kubelet\"}[2m])) by (namespace) / 120",
+          "expr": "sum(increase(container_cpu_usage_seconds_total{container!~\"POD|\" ,namespace!=\"\",namespace=\"default\",service=\"prometheus-kube-prometheus-kubelet\"}[2m])) by (namespace) / 120",
           "interval": "",
           "legendFormat": "{{namespace}}",
           "range": true,
@@ -881,6 +920,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -894,6 +934,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -943,6 +984,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -968,7 +1010,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -976,6 +1018,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -991,6 +1034,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1068,6 +1112,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -1078,10 +1123,12 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by (node) (kube_pod_container_resource_requests{container=~\"s[0-9].*\"})",
+          "expr": "sum by (node) (kube_pod_container_resource_requests)",
           "interval": "",
           "legendFormat": "{{node}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1090,8 +1137,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": []
@@ -1100,6 +1146,7 @@
     "from": "now-15m",
     "to": "now"
   },
+  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {
     "refresh_intervals": [
       "5s",
@@ -1118,6 +1165,6 @@
   "timezone": "",
   "title": "µBench-dashboard",
   "uid": "6IBeJ-b7k",
-  "version": 4,
+  "version": 6,
   "weekStart": ""
 }

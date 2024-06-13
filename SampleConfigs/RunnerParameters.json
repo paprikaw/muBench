@@ -1,12 +1,15 @@
 {
-   "RunnerParameters":{
-      "ms_access_gateway": "http://192.168.49.2:31113",
-      "workload_files_path_list": ["SimulationWorkspace/workload.json"],
+   "RunnerParameters": {
+      "ms_access_gateway": "http://address-point-to-your-gateway",
+      "workload_files_path_list": [
+         "SimulationWorkspace/workload.json"
+      ],
       "workload_rounds": 1,
       "workload_type": "greedy",
       "workload_events": 5000,
       "thread_pool_size": 4,
-      "result_file": "result"
+      "result_file": "result",
+      "ingress_service": "s0"
    },
    "OutputPath": "SimulationWorkspace/Result",
    "_AfterWorkloadFunction": {
@@ -15,4 +18,3 @@
       "function_name": "get_prometheus_stats"
    }
 }
-

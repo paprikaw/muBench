@@ -4,15 +4,18 @@
       {
         "seq_len": 100,
         "services": [
-          "s1"
+          "s1",
+          "s2"
         ],
         "probabilities": {
-          "s1": 1.0
+          "s1": 0.5,
+          "s2": 0.5
         }
       }
     ]
   },
-  "s1": {
+  "s1": {},
+  "s2": {
     "external_services": [
       {
         "seq_len": 1,

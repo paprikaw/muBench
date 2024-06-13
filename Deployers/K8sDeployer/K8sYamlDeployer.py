@@ -27,30 +27,67 @@ def deploy_items(folder,st):
         with open(yaml_to_apply) as f:
             complete_yaml = yaml.load_all(f,Loader=yaml.FullLoader)
             for partial_yaml in complete_yaml:
-                try:
-                    if partial_yaml["kind"] == "Deployment":
-                        k8s_apps_api.create_namespaced_deployment(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
-                        dn=partial_yaml['metadata']['name']
-                        api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
-                        while (api_response.status.ready_replicas != api_response.status.replicas):
-                            print(f"\n *** Waiting deployment {dn} ready ...*** \n")
-                            time.sleep(5)
-                            api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
-                        time.sleep(st) # used to avoid API server overload
-                        print(f"Deployment {dn} created.")
-                    elif partial_yaml["kind"] == "Service":
-                        k8s_core_api.create_namespaced_service(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
-                        print(f"Service '{partial_yaml['metadata']['name']}' created.")
+                if partial_yaml["kind"] == "ConfigMap":
+                    try:
+                        k8s_core_api.create_namespaced_config_map(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+                        print(f"ConfigMap '{partial_yaml['metadata']['name']}' created.")
                         print("---")
-                    elif partial_yaml["kind"] == "ConfigMap":
-                            k8s_core_api.create_namespaced_config_map(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
-                            print(f"ConfigMap '{partial_yaml['metadata']['name']}' created.")
-                            print("---")
-                except ApiException as err:
-                    api_exception_body = json.loads(err.body)
-                    print("######################")
-                    print(f"Exception raised deploying a {partial_yaml['kind']}: {api_exception_body['details']} -> {api_exception_body['reason']}")
-                    print("######################")                
+                    except ApiException as err:
+                        api_exception_body = json.loads(err.body)
+                        print("######################")
+                        print(f"Exception raised deploying a ConfigMap: {api_exception_body['details']} -> {api_exception_body['reason']}")
+                        print("######################")
+
+# Then deploy other resources
+    for yaml_to_apply in items:
+        with open(yaml_to_apply) as f:
+            complete_yaml = list(yaml.load_all(f, Loader=yaml.FullLoader))
+        for partial_yaml in complete_yaml:
+            try:
+                if partial_yaml["kind"] == "Deployment":
+                    k8s_apps_api.create_namespaced_deployment(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+                    dn = partial_yaml['metadata']['name']
+                    api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
+                    while (api_response.status.ready_replicas != api_response.status.replicas):
+                        print(f"\n *** Waiting deployment {dn} ready ...*** \n")
+                        time.sleep(5)
+                        api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
+                    time.sleep(st)  # used to avoid API server overload
+                    print(f"Deployment {dn} created.")
+                elif partial_yaml["kind"] == "Service":
+                    k8s_core_api.create_namespaced_service(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+                    print(f"Service '{partial_yaml['metadata']['name']}' created.")
+                    print("---")
+            except ApiException as err:
+                api_exception_body = json.loads(err.body)
+                print("######################")
+                print(f"Exception raised deploying a {partial_yaml['kind']}: {api_exception_body['details']} -> {api_exception_body['reason']}")
+                print("######################")
+            # for partial_yaml in complete_yaml:
+            #     try:
+            #         if partial_yaml["kind"] == "Deployment":
+            #             k8s_apps_api.create_namespaced_deployment(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+            #             dn=partial_yaml['metadata']['name']
+            #             api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
+            #             while (api_response.status.ready_replicas != api_response.status.replicas):
+            #                 print(f"\n *** Waiting deployment {dn} ready ...*** \n")
+            #                 time.sleep(5)
+            #                 api_response = k8s_apps_api.read_namespaced_deployment_status(name=partial_yaml['metadata']['name'], namespace=partial_yaml["metadata"]["namespace"], pretty=True)
+            #             time.sleep(st) # used to avoid API server overload
+            #             print(f"Deployment {dn} created.")
+            #         elif partial_yaml["kind"] == "Service":
+            #             k8s_core_api.create_namespaced_service(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+            #             print(f"Service '{partial_yaml['metadata']['name']}' created.")
+            #             print("---")
+            #         elif partial_yaml["kind"] == "ConfigMap":
+            #                 k8s_core_api.create_namespaced_config_map(namespace=partial_yaml["metadata"]["namespace"], body=partial_yaml)
+            #                 print(f"ConfigMap '{partial_yaml['metadata']['name']}' created.")
+            #                 print("---")
+            #     except ApiException as err:
+            #         api_exception_body = json.loads(err.body)
+            #         print("######################")
+            #         print(f"Exception raised deploying a {partial_yaml['kind']}: {api_exception_body['details']} -> {api_exception_body['reason']}")
+            #         print("######################")                
 
 def undeploy_items(folder):
     print("######################")
