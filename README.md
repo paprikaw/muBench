@@ -1,5 +1,8 @@
 # **µBench** - A factory of benchmarking microservices applications
 
+Forked from original [µBench](https://github.com/mSvcBench/muBench) prject, many thanks to the original author of µBench.
+
+This repository is for a research project of the Univesity of Melbourne, we are using µBench to construct workloads that suits our research scenario. Our workloads is in the folder `/HealthcareWorkspace`, we think it will be a good start point after you finished the quick start guide and want to try out defining you own custom workloads.
 
 ![service-cell-rest-grpc](Docs/microservices-rest-grpc.png)
 

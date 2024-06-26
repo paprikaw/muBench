@@ -136,3 +136,5 @@ dmypy.json
 .pyre/
 .obsidian/
 Configs/
+HealthcareWorkspace/yamls/*
+HealthcareWorkspace/Result/*
