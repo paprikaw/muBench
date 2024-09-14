@@ -1,0 +1,44 @@
+{
+    "data-compression": {
+        "external_services": [
+            {
+                "seq_len": 1,
+                "services": [
+                    "detection"
+                ]
+            },
+            {
+                "seq_len": 1,
+                "services": [
+                    "machine-learning"
+                ]
+            }
+        ]
+    },
+    "detection": {
+        "external_services": [
+            {
+                "seq_len": 1,
+                "services": [
+                    "db"
+                ]
+            }
+        ]
+    },
+    "machine-learning": {
+        "external_services": [
+            {
+                "seq_len": 10000,
+                "services": []
+            }
+        ]
+    },
+    "db": {
+        "external_services": [
+            {
+                "seq_len": 1,
+                "services": []
+            }
+        ]
+    }
+}

@@ -23,7 +23,11 @@ RUN echo 'export PATH=$PATH:/usr/local/go/bin' >>~/.bashrc
 RUN export PATH="$PATH:/usr/local/go/bin"
 
 # cert-manager
-RUN OS=$(go env GOOS); ARCH=$(go env GOARCH); curl -L -o cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/download/v1.14.6/cmctl-$OS-$ARCH.tar.gz
+# RUN OS=$(go env GOOS); ARCH=$(go env GOARCH); curl -L -o cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/download/v1.14.6/cmctl-$OS-$ARCH.tar.gz
+# RUN tar xzf cmctl.tar.gz
+ENV OS=linux
+ENV ARCH=amd64
+RUN curl -L -o cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/download/v1.14.6/cmctl-$OS-$ARCH.tar.gz
 RUN tar xzf cmctl.tar.gz
 RUN mv cmctl /usr/local/bin
 

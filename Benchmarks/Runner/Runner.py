@@ -250,8 +250,7 @@ except AttributeError:
 except Exception as err:
     print("Error:", err)
 
-parameters_file_path = args.parameters_file
-
+parameters_file_path = "/Users/ericwhite/Projects/muBench/Configs/RunnerParameters.json" 
 last_print_time_ms = 0
 run_after_workload = None
 timing_error_requests = 0

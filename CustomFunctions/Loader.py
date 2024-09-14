@@ -42,9 +42,11 @@ def cpu_loader(params):
 
 def bandwidth_loader(params):
     # print("--------> Network stress start")
-    bandwidth_load = random.expovariate(1 / params["mean_bandwidth"])
+    bandwidth_load = params["mean_bandwidth"]
+    start_local_processing = time.time()
     num_chars = int(max(1, 1000 * bandwidth_load))  # Response in kB
-    response_body = ''.join(random.choice(string.ascii_letters) for i in range(num_chars))
+    response_body = ''.join('a' for i in range(num_chars))
+    print(time.time() - start_local_processing) 
     # print("--------> Network stress stop")
     return response_body
 
@@ -108,7 +110,7 @@ def loader(params):
             "cpu_stress": {"run":False,"range_complexity": [100, 100], "thread_pool_size": 1, "trials": 1},
             "memory_stress":{"run":False, "memory_size": 10000, "memory_io": 1000},
             "disk_stress":{"run":False,"tmp_file_name":  "mubtestfile.txt", "disk_write_block_count": 1000, "disk_write_block_size": 1024},
-            "sleep_stress":{"run":True,"sleep_time": 0.01},
+            "sleep_stress":{"run":False,"sleep_time": 0.01},
             "mean_bandwidth": 11}
 
         params = jsonmerge.merge(default_params,params)
@@ -125,4 +127,11 @@ def loader(params):
     return bandwidth_loader(params)
 
 if __name__ == '__main__':
-    loader({})
+    default = {
+        "cpu_stress": {"run":True,"range_complexity": [100, 100], "thread_pool_size": 1, "trials": 10},
+        "memory_stress":{"run":True, "memory_size": 10000, "memory_io": 1000},
+        "disk_stress":{"run":True,"tmp_file_name":  "mubtestfile.txt", "disk_write_block_count": 1000, "disk_write_block_size": 1024},
+        "sleep_stress":{"run":False,"sleep_time": 0.01},
+        "mean_bandwidth": 100}
+    
+    loader(default)

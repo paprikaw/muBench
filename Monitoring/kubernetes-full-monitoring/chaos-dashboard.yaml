@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaos-dashboard
+  namespace: chaos-mesh
+spec:
+  type: NodePort
+  ports:
+    - name: web
+      port: 2333
+      protocol: TCP
+      targetPort: 2333
+      nodePort: 32333 # 你可以指定一个范围在 30000-32767 之间的端口号，或者让 Kubernetes 自动分配
+  selector:
+    app.kubernetes.io/component: chaos-dashboard

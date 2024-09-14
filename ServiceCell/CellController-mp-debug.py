@@ -54,7 +54,7 @@ traceEscapeString = "__"
 globalDict=dict()
 def read_config_files():
     res = dict()
-    with open('MSConfig/workmodel.json') as f:
+    with open('HealthcareWorkspace/workmodel.json') as f:
         workmodel = json.load(f)
         # shrink workmodel
         for service in workmodel:

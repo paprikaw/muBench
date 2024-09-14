@@ -1,0 +1,116 @@
+{
+   "WorkModelParameters": {
+      "f2": {
+         "type": "function",
+         "value": {
+            "name": "loader",
+            "recipient": "service",
+            "probability": 1,
+            "parameters": {
+               "cpu_stress": {
+                  "run": false,
+                  "range_complexity": [
+                     100,
+                     100
+                  ],
+                  "thread_pool_size": 1,
+                  "trials": 1
+               },
+               "memory_stress": {
+                  "run": false,
+                  "memory_size": 10000,
+                  "memory_io": 1000
+               },
+               "disk_stress": {
+                  "run": true,
+                  "tmp_file_name": "mubtestfile.txt",
+                  "disk_write_block_count": 1000,
+                  "disk_write_block_size": 1024
+               },
+               "sleep_stress": {
+                  "run": false,
+                  "sleep_time": 0.01
+               },
+               "mean_bandwidth": 11
+            },
+            "workers": 4,
+            "threads": 16,
+            "cpu-requests": "1000m",
+            "cpu-limits": "1000m"
+         }
+      },
+      "f3": {
+         "type": "function",
+         "value": {
+            "name": "loader",
+            "recipient": "service",
+            "probability": 1,
+            "parameters": {
+               "cpu_stress": {
+                  "run": true,
+                  "range_complexity": [
+                     1000,
+                     1000
+                  ],
+                  "thread_pool_size": 1,
+                  "trials": 1
+               },
+               "memory_stress": {
+                  "run": false,
+                  "memory_size": 10000,
+                  "memory_io": 1000
+               },
+               "disk_stress": {
+                  "run": false,
+                  "tmp_file_name": "mubtestfile.txt",
+                  "disk_write_block_count": 1000,
+                  "disk_write_block_size": 1024
+               },
+               "sleep_stress": {
+                  "run": false,
+                  "sleep_time": 0.01
+               },
+               "mean_bandwidth": 11
+            },
+            "workers": 4,
+            "threads": 16,
+            "cpu-requests": "1000m",
+            "cpu-limits": "1000m",
+            "replicas": 2
+         }
+      },
+      "request_method": {
+         "type": "metadata",
+         "value": "rest"
+      },
+      "databases_prefix": {
+         "type": "metadata",
+         "value": "sdb"
+      },
+      "override": {
+         "type": "metadata",
+         "value": {
+            "data-compression": {
+               "function_id": "f2"
+            },
+            "detection": {
+               "function_id": "f2"
+            },
+            "db": {
+               "function_id": "f3"
+            },
+            "machine-learning": {
+               "function_id": "f2"
+            }
+         }
+      },
+      "ServiceMeshFilePath": {
+         "type": "metadata",
+         "value": "HealthcareWorkspace/service_mesh.json"
+      },
+      "OutputPath": {
+         "type": "metadata",
+         "value": "HealthcareWorkspace/Result"
+      }
+   }
+}
