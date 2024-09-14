@@ -49,7 +49,7 @@ K8S_APP = os.environ["K8S_APP"]  # K8s label app
 PN = os.environ["PN"] # Number of processes
 TN = os.environ["TN"] # Number of thread per process
 traceEscapeString = "__"
-
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 #globalDict=Manager().dict()
 globalDict=dict()
 def read_config_files():
@@ -244,7 +244,7 @@ class gRPCThread(Thread, pb2_grpc.MicroServiceServicer):
             # Execute the internal service
             app.logger.info("*************** INTERNAL SERVICE STARTED ***************")
             start_local_processing = time.time()
-            body = run_internal_service(work_model_config["internal_service"])
+            body = internal_service_executer.run_internal_service()
             local_processing_latency = time.time() - start_local_processing
             INTERNAL_PROCESSING.labels(ZONE, K8S_APP, "grpc", "grpc").observe(local_processing_latency*1000)
             RESPONSE_SIZE.labels(ZONE, K8S_APP, "grpc", "grpc", remote_address, ID).observe(len(body))
