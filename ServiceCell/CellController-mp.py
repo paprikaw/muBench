@@ -106,7 +106,9 @@ REQUEST_PROCESSING_BUCKET = Histogram('mub_request_processing_latency_millisecon
                            ['zone', 'app_name', 'method', 'endpoint', 'from', 'kubernetes_service'],registry=registry,buckets=buckets
 )
 
-internal_service_executer = InternalServiceExecutor(internal_service_config)
+
+internal_service_params = list(internal_service_config.values())[0]
+internal_service_executer = InternalServiceExecutor(internal_service_params)
 
 @app.route(f"{globalDict['work_model'][ID]['path']}", methods=['GET','POST'])
 def start_worker():
