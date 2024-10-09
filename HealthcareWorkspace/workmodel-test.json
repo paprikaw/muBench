@@ -1,4 +1,55 @@
 {
+  "client": {
+    "external_services": [
+      {
+        "seq_len": 1,
+        "services": [
+          "data-compression"
+        ]
+      }
+    ],
+    "internal_service": {
+      "loader": {
+        "cpu_stress": {
+          "run": false,
+          "range_complexity": [
+            3,
+            3
+          ],
+          "thread_pool_size": 1,
+          "trials": 1
+        },
+        "memory_stress": {
+          "run": false,
+          "memory_size": 100,
+          "memory_io": 100
+        },
+        "disk_stress": {
+          "run": false,
+          "tmp_file_name": "mubtestfile.txt",
+          "disk_write_block_count": 10,
+          "disk_write_block_size": 1024
+        },
+        "sleep_stress": {
+          "run": false,
+          "sleep_time": 0.01
+        },
+        "mean_bandwidth": 1
+      }
+    },
+    "request_method": "rest",
+    "workers": 4,
+    "threads": 16,
+    "replicas": 1,
+    "cpu-requests": "500m",
+    "cpu-limits": "500m",
+    "memory-requests": "500Mi",
+    "memory-limits": "500Mi",
+    "is_client": true,
+    "node_affinity": [
+      "tb-client-vm-2-1"
+    ]
+  },
   "data-compression": {
     "external_services": [
       {
@@ -19,11 +70,11 @@
         "cpu_stress": {
           "run": true,
           "range_complexity": [
-            1000,
-            1000
+            200,
+            200
           ],
           "thread_pool_size": 1,
-          "trials": 4
+          "trials": 2
         },
         "memory_stress": {
           "run": true,
@@ -31,26 +82,29 @@
           "memory_io": 1000
         },
         "disk_stress": {
-          "run": true,
+          "run": false,
           "tmp_file_name": "mubtestfile.txt",
-          "disk_write_block_count": 1000,
+          "disk_write_block_count": 10,
           "disk_write_block_size": 1024
         },
         "sleep_stress": {
           "run": false,
           "sleep_time": 0.01
         },
-        "mean_bandwidth": 500
+        "mean_bandwidth": 10
       }
     },
     "request_method": "rest",
-    "workers": 1,
-    "threads": 1,
-    "memory-requests": "800Mi",
-    "memory-limits": "800Mi",
-    "cpu-requests": "800m",
-    "cpu-limits": "800m",
-    "replicas": 2
+    "workers": 4,
+    "threads": 16,
+    "replicas": 1,
+    "cpu-requests": "500m",
+    "cpu-limits": "500m",
+    "memory-requests": "500Mi",
+    "memory-limits": "500Mi",
+    "node_affinity": [
+      "tb-edge-vm3"
+    ]
   },
   "detection": {
     "external_services": [
@@ -64,11 +118,11 @@
         "cpu_stress": {
           "run": true,
           "range_complexity": [
-            3,
-            3
+            200,
+            200
           ],
           "thread_pool_size": 1,
-          "trials": 1
+          "trials": 4
         },
         "memory_stress": {
           "run": true,
@@ -85,18 +139,20 @@
           "run": false,
           "sleep_time": 0.01
         },
-        "mean_bandwidth": 500,
-        "function_id": "f1"
+        "mean_bandwidth": 10
       }
     },
     "request_method": "rest",
-    "workers": 1,
-    "threads": 1,
-    "memory-requests": "800Mi",
-    "memory-limits": "800Mi",
-    "cpu-requests": "800m",
-    "cpu-limits": "800m",
-    "replicas": 2
+    "workers": 4,
+    "threads": 16,
+    "memory-requests": "500Mi",
+    "memory-limits": "500Mi",
+    "cpu-requests": "500m",
+    "cpu-limits": "500m",
+    "replicas": 1,
+    "node_affinity": [
+      "tb-edge-vm2"
+    ]
   },
   "machine-learning": {
     "external_services": [
@@ -112,39 +168,41 @@
         "cpu_stress": {
           "run": true,
           "range_complexity": [
-            100,
-            100
+            300,
+            300
           ],
           "thread_pool_size": 1,
-          "trials": 4
+          "trials": 8
         },
         "memory_stress": {
           "run": true,
-          "memory_size": 1000,
-          "memory_io": 1000
+          "memory_size": 2000,
+          "memory_io": 2000
         },
         "disk_stress": {
-          "run": true,
+          "run": false,
           "tmp_file_name": "mubtestfile.txt",
-          "disk_write_block_count": 1000,
+          "disk_write_block_count": 100,
           "disk_write_block_size": 1024
         },
         "sleep_stress": {
           "run": false,
           "sleep_time": 0.01
         },
-        "mean_bandwidth": 500,
-        "function_id": "f1"
+        "mean_bandwidth": 10
       }
     },
     "request_method": "rest",
-    "workers": 1,
-    "threads": 1,
+    "workers": 4,
+    "threads": 16,
     "memory-requests": "800Mi",
     "memory-limits": "800Mi",
     "cpu-requests": "800m",
     "cpu-limits": "800m",
-    "replicas": 1
+    "replicas": 1,
+    "node_affinity": [
+      "tb-cloud-vm1"
+    ]
   },
   "db": {
     "external_services": [],
@@ -153,8 +211,8 @@
         "cpu_stress": {
           "run": true,
           "range_complexity": [
-            3,
-            3
+            100,
+            100
           ],
           "thread_pool_size": 1,
           "trials": 1
@@ -174,16 +232,19 @@
           "run": false,
           "sleep_time": 0.01
         },
-        "mean_bandwidth": 50,
+        "mean_bandwidth": 10
       }
     },
     "request_method": "rest",
-    "workers": 1,
-    "threads": 1,
+    "workers": 4,
+    "threads": 16,
     "replicas": 1,
-    "cpu-requests": "800m",
-    "cpu-limits": "800m",
-    "memory-requests": "800Mi",
-    "memory-limits": "800Mi"
+    "cpu-requests": "500m",
+    "cpu-limits": "500m",
+    "memory-requests": "500Mi",
+    "memory-limits": "500Mi",
+    "node_affinity": [
+      "tb-cloud-vm1"
+    ]
   }
 }

@@ -8,6 +8,7 @@ K8s_YAML_BUILDER_PATH = os.path.dirname(os.path.abspath(__file__))
 
 SIDECAR_TEMPLATE = "- name: %s-sidecar\n          image: %s"
 NODE_AFFINITY_TEMPLATE = {'affinity': {'nodeAffinity': {'requiredDuringSchedulingIgnoredDuringExecution': {'nodeSelectorTerms': [{'matchExpressions': [{'key': 'kubernetes.io/hostname','operator': 'In','values': ['']}]}]}}}}
+NODE_TOLERATION_TEMPLATE = {'tolerations': [{'key': 'tb-node-type','operator': 'Equal','value': 'client','effect': 'NoSchedule'}]}
 POD_ANTIAFFINITI_TEMPLATE = {'affinity':{'podAntiAffinity':{'requiredDuringSchedulingIgnoredDuringExecution':[{'labelSelector':{'matchExpressions':[{'key':'app','operator':'In','values':['']}]},'topologyKey':'kubernetes.io/hostname'}]}}}
 
 # Override work_model params with those in k8s_parameters
@@ -47,6 +48,10 @@ def create_deployment_yaml_files(workmodel, k8s_parameters, nfs, output_path):
         with open(f"{K8s_YAML_BUILDER_PATH}/Templates/DeploymentTemplate.yaml", "r") as file:
             f = file.read()
             f = f.replace("{{SERVICE_NAME}}", service)
+            if "is_probe" in workmodel[service].keys() and workmodel[service]['is_probe']==True:
+                f = f.replace("{{DEPLOYMENT_NAME}}", "probe")
+            else:
+                f = f.replace("{{DEPLOYMENT_NAME}}", "mubench")
             f = f.replace("{{IMAGE}}", workmodel[service]["image"])
             f = f.replace("{{NAMESPACE}}", namespace)
             if "scheduler-name" in workmodel[service].keys():
@@ -67,6 +72,12 @@ def create_deployment_yaml_files(workmodel, k8s_parameters, nfs, output_path):
                 f = f.replace("{{NODE_AFFINITY}}", str(yaml.dump(NODE_AFFINITY_TEMPLATE_TO_ADD)).rstrip().replace('\n','\n      '))
             else:
                 f = f.replace("{{NODE_AFFINITY}}", "")
+
+            if "is_client" in workmodel[service].keys() and workmodel[service]['is_client']==True:
+                f = f.replace("{{NODE_TOLERATION}}", str(yaml.dump(NODE_TOLERATION_TEMPLATE)).rstrip().replace('\n','\n      '))
+            else:
+                f = f.replace("{{NODE_TOLERATION}}", "".rstrip())
+
             if "pod_antiaffinity" in workmodel[service].keys() and workmodel[service]['pod_antiaffinity']==True:
                 POD_ANTIAFFINITY_TO_ADD = POD_ANTIAFFINITI_TEMPLATE
                 POD_ANTIAFFINITY_TO_ADD['affinity']['podAntiAffinity']['requiredDuringSchedulingIgnoredDuringExecution'][0]['labelSelector']['matchExpressions'][0]['values'][0] = service
@@ -147,6 +158,15 @@ def create_workmodel_configmap_yaml_file(workmodel, k8s_parameters, nfs, output_
     with open(f"{output_path}/yamls/ConfigMapWorkmodel.yaml", "w") as file:
         file.write(f)
     print("Workmodel Configmap Created!")
+
+def create_executiontime_configmap_yaml_file(k8s_parameters,  output_path):
+    namespace = k8s_parameters['namespace']
+    with open(f"{K8s_YAML_BUILDER_PATH}/Templates/ConfigMapExecutionTimeTemplate.yaml", "r") as file:
+        f = file.read()
+        f = f.replace("{{NAMESPACE}}", namespace)
+    with open(f"{output_path}/yamls/ConfigMapExecutionTime.yaml", "w") as file:
+        file.write(f)
+    print("Execution Time Configmap Created!")
 
 def create_internalservice_configmap_yaml_file(k8s_parameters, nfs, output_path, internal_service_functions_path):
     namespace = k8s_parameters['namespace']

@@ -2,9 +2,14 @@ apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
   meshConfig:
+    enableTracing: true
     accessLogFile: /dev/stdout
     defaultConfig:
       tracing:
         zipkin:
           address: zipkin.istio-system:9411
         sampling: 50
+        custom_tags:
+          podName:
+            environment:
+              name: POD_NAME

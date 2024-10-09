@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 import argparse
 import json
 import os
@@ -22,6 +21,7 @@ import mub_pb2_grpc as pb2_grpc
 import mub_pb2 as pb2
 import grpc
 
+from urllib.parse import parse_qsl, urlencode
 
 # Configuration of global variables
 
@@ -48,6 +48,24 @@ ZONE = os.environ["ZONE"]  # Pod Zone
 K8S_APP = os.environ["K8S_APP"]  # K8s label app
 PN = os.environ["PN"] # Number of processes
 TN = os.environ["TN"] # Number of thread per process
+NODE_NAME = os.environ["NODE_NAME"] # Node Name
+CLOUD_LATENCY = float(os.environ["CLOUD_LATENCY"]) # Cloud Latency
+CLOUD_NODE_NAME_PREFIX = os.environ["CLOUD_NODE_NAME_PREFIX"] # Cloud Node Name Prefix
+# 从环境变量中获取 JSON 数据
+execution_time_map_json = os.environ.get("EXECUTION_TIME_MAP")
+
+current_execution_time = -1
+if not execution_time_map_json:
+    raise ValueError("CONFIG_JSON environment variable is not set")
+
+# 反序列化 JSON 数据
+try:
+    execution_time_map = json.loads(execution_time_map_json)
+except json.JSONDecodeError as e:
+    raise ValueError(f"Error parsing JSON: {e}")
+
+# 打印反序列化后的数据
+print("Execution Time Map:", execution_time_map)
 traceEscapeString = "__"
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 #globalDict=Manager().dict()
@@ -116,6 +134,7 @@ def start_worker():
     global service_mesh_config 
     global internal_service_config 
     global InternalServiceExecutor
+    global current_execution_time
     try:
         start_request_processing = time.time()
         app.logger.info('Request Received')
@@ -160,12 +179,29 @@ def start_worker():
                 if behaviour_id in work_model_config['alternative_behaviors'].keys():
                     if "external_services" in work_model_config['alternative_behaviors'][behaviour_id].keys():
                         service_mesh_config = work_model_config['alternative_behaviors'][behaviour_id]['external_services']
-
+        # 读取query string中的上一个pod所在的layer，并且和当前pod
+        # app.logger.info("*************** Simulate Cloud Latency ***************")
+        # query_params = dict(parse_qsl(query_string))
+        # last_pod_node_name = query_params.get('last_pod_node_name', NODE_NAME)
+        # logging.info(f"NODE_NAME: {NODE_NAME}, last_pod_node_name: {last_pod_node_name}")
+        # if is_cloud(NODE_NAME) != is_cloud(last_pod_node_name):
+        #     logging.info(f"Sleeping for cloud latency: {CLOUD_LATENCY}")
+        #     time.sleep(CLOUD_LATENCY)
+        # query_params['last_pod_node_name'] = NODE_NAME
+        # query_string = urlencode(query_params)
         # Execute the internal service
         app.logger.info("*************** INTERNAL SERVICE STARTED ***************")
         start_local_processing = time.time()
         body = internal_service_executer.run_internal_service() # TODO: This implementation is not supported for trace driven
         local_processing_latency = time.time() - start_local_processing
+        # Apply the node specific overhead
+        sleep_time = execution_time_map[NODE_NAME] * local_processing_latency
+        time.sleep(sleep_time)
+        app.logger.info(f"Execution time: {local_processing_latency}")
+        app.logger.info(f"Sleeping for more execution time: {sleep_time}")
+        app.logger.info(f"Sleeping factor: {execution_time_map[NODE_NAME]}")
+        local_processing_latency = time.time() - start_local_processing
+        current_execution_time = local_processing_latency
         INTERNAL_PROCESSING.labels(ZONE, K8S_APP, request.method, request.path).observe(local_processing_latency*1000)
         INTERNAL_PROCESSING_BUCKET.labels(ZONE, K8S_APP, request.method, request.path).observe(local_processing_latency*1000)
         RESPONSE_SIZE.labels(ZONE, K8S_APP, request.method, request.path, request.remote_addr, ID).observe(len(body))
@@ -204,10 +240,17 @@ def start_worker():
         # app.logger.error(traceback.format_exc())
         return json.dumps({"message": "Error"}), 500
 
-# Prometheus
-@app.route('/metrics')
+def is_cloud(node_name: str) -> bool:
+    return node_name.startswith(CLOUD_NODE_NAME_PREFIX)
+
+@app.route('/', methods=['GET'])
+def index():
+    return 'Hello World'
+
+@app.route('/execution_time', methods=['GET'])
 def metrics():
-    return Response(prometheus_client.generate_latest(registry), mimetype=CONTENT_TYPE_LATEST)
+    global current_execution_time
+    return make_response(str(current_execution_time))
 
 # Custom Gunicorn application: https://docs.gunicorn.org/en/stable/custom.html
 class HttpServer(gunicorn.app.base.BaseApplication):

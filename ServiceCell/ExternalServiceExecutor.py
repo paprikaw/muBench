@@ -37,7 +37,10 @@ def request_REST(service,id,work_model,s,trace,query_string, app, jaeger_context
         service_no_escape = service.split("__")[0]
         if len(trace)==0 and len(query_string)==0:
             # default 
-            return s.get(f'http://{work_model[service_no_escape]["url"]}{work_model[service_no_escape]["path"]}', headers=jaeger_context)
+            cur_time = time.time()
+            response = s.get(f'http://{work_model[service_no_escape]["url"]}{work_model[service_no_escape]["path"]}', headers=jaeger_context)
+            print(f"request delay2: {time.time() - cur_time}")
+            return response
         elif len(trace)>0:
             # trace-driven request
             headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
@@ -100,7 +103,11 @@ def external_service(group,id,work_model,trace,query_string, app, trace_context)
                 p = 1
             if random.random() < p :
                 # service called with probability p
+                current_time = time.time()
+                print(f"current time: {current_time}")
                 r = request_function(service,id,work_model,s,trace,query_string, app, trace_context)
+                print(f"request delay: {time.time() - current_time}")
+
                 app.logger.info("Service: %s -> Status_code: %s -- len(text): %d" % (service, r.status_code, len(r.text)))
                 if type(r.status_code) == bool and not r.status_code:
                     raise Exception(f"Error in external service: {service} -- (gRPC) status_code: {r.status_code}")

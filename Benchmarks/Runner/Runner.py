@@ -179,8 +179,7 @@ def greedy_runner():
         run_after_workload(args)
 
 def periodic_runner():
-    global start_time, stats, local_latency_stats, runner_parameters
-
+    global start_time, stats, local_latency_stats, runner_parameters, threads
     if 'rate' in runner_parameters.keys():
         rate=runner_parameters['rate']
     else:
@@ -250,7 +249,8 @@ except AttributeError:
 except Exception as err:
     print("Error:", err)
 
-parameters_file_path = "/Users/ericwhite/Projects/muBench/Configs/RunnerParameters.json" 
+# parameters_file_path = "/Users/ericwhite/Projects/muBench/Configs/RunnerParameters.json" 
+parameters_file_path = args.parameters_file if args.parameters_file else "/Users/ericwhite/Projects/muBench/Configs/RunnerParameters.json"
 last_print_time_ms = 0
 run_after_workload = None
 timing_error_requests = 0
@@ -329,3 +329,4 @@ else:
         with open(f"{output_path}/{result_file}_{workload_var.split('/')[-1].split('.')[0]}.txt", "w") as f:
             f.writelines("\n".join(stats))
  
+

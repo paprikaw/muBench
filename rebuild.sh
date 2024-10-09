@@ -1,3 +1,4 @@
 #!/bin/bash
-docker build -t xu/mubench/svc:dev ServiceCell
+docker build -t paprikaw/mubench:dev ServiceCell
+docker push paprikaw/mubench:dev
 ./redeploy.sh

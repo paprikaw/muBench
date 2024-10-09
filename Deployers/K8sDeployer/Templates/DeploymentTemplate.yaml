@@ -19,18 +19,22 @@ spec:
       labels:
         zone: default
         app: {{SERVICE_NAME}}
+        deployment: {{DEPLOYMENT_NAME}}
         version: "1.0"
         prometheus.io/scrape: 'true'
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8080'
+        controller.kubernetes.io/pod-deletion-cost: '1000'
     spec:
+      {{NODE_TOLERATION}}
       terminationGracePeriodSeconds : 3
       {{NODE_AFFINITY}}
       schedulerName: {{SCHEDULER_NAME}}
       containers:
         - name: {{SERVICE_NAME}}
           image: {{IMAGE}}
+          imagePullPolicy: Always
           ports:
             - name: http-mubpodport
               containerPort: 8080
@@ -44,6 +48,15 @@ spec:
           env:
             - name: APP
               value: {{SERVICE_NAME}}
+            - name: EXECUTION_TIME_MAP
+              valueFrom:
+                configMapKeyRef:
+                  name: execution-time-config
+                  key: json_data
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: ZONE
               valueFrom:
                 fieldRef:
@@ -52,14 +65,20 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.labels['app']
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: PN
               value: {{PN}}
             - name: TN
               value: {{TN}}
+            - name: CLOUD_LATENCY
+              value: '0.05'
+            - name: CLOUD_NODE_NAME_PREFIX
+              value: 'tb-cloud'
           resources: {{RESOURCES}}    
-        
         {{SIDECAR}}
-
       {{POD_ANTIAFFINITY}}
 
       volumes:

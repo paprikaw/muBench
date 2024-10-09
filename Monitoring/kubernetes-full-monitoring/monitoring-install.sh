@@ -2,7 +2,7 @@
 # 1. Install istioctl for istio installation
 # Secure .kube
 chmod go-r -R ~/.kube/
-
+set -e
 # Prometherus
 kubectl create namespace monitoring
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
