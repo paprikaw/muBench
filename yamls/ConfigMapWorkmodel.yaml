@@ -105,14 +105,15 @@ data:
         "request_method": "rest",
         "workers": 4,
         "threads": 16,
-        "replicas": 1,
+        "replicas": 7,
         "cpu-requests": "600m",
         "cpu-limits": "600m",
         "memory-requests": "600Mi",
         "memory-limits": "600Mi",
         "node_affinity": [
           "tb-cloud-vm-8-1",
-          "tb-cloud-vm-8-2"
+          "tb-cloud-vm-8-2",
+          "tb-cloud-vm-8-3"
         ],
         "url": "aggregator.default.svc.cluster.local",
         "path": "/api/v1",
@@ -162,10 +163,11 @@ data:
         "memory-limits": "900Mi",
         "cpu-requests": "900m",
         "cpu-limits": "900m",
-        "replicas": 1,
+        "replicas": 7,
         "node_affinity": [
           "tb-cloud-vm-8-1",
-          "tb-cloud-vm-8-2"
+          "tb-cloud-vm-8-2",
+          "tb-cloud-vm-8-3"
         ],
         "url": "detection.default.svc.cluster.local",
         "path": "/api/v1",
@@ -217,10 +219,11 @@ data:
         "memory-limits": "1900Mi",
         "cpu-requests": "1900m",
         "cpu-limits": "1900m",
-        "replicas": 1,
+        "replicas": 7,
         "node_affinity": [
           "tb-cloud-vm-8-1",
-          "tb-cloud-vm-8-2"
+          "tb-cloud-vm-8-2",
+          "tb-cloud-vm-8-3"
         ],
         "url": "machine-learning.default.svc.cluster.local",
         "path": "/api/v1",
@@ -261,14 +264,15 @@ data:
         "request_method": "rest",
         "workers": 4,
         "threads": 16,
-        "replicas": 1,
+        "replicas": 7,
         "cpu-requests": "600m",
         "cpu-limits": "600m",
         "memory-requests": "600Mi",
         "memory-limits": "600Mi",
         "node_affinity": [
           "tb-cloud-vm-8-1",
-          "tb-cloud-vm-8-2"
+          "tb-cloud-vm-8-2",
+          "tb-cloud-vm-8-3"
         ],
         "url": "db.default.svc.cluster.local",
         "path": "/api/v1",

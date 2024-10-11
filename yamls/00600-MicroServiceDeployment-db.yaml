@@ -14,7 +14,7 @@ spec:
   selector:
     matchLabels:
       app: db
-  replicas: 1
+  replicas: 7
   template:
     metadata:
       labels:
@@ -40,6 +40,7 @@ spec:
                 values:
                 - tb-cloud-vm-8-1
                 - tb-cloud-vm-8-2
+                - tb-cloud-vm-8-3
             weight: 1
       schedulerName: default-scheduler
       containers:

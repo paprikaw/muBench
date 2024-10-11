@@ -98,14 +98,15 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "replicas": 1,
+    "replicas": 7,
     "cpu-requests": "600m",
     "cpu-limits": "600m",
     "memory-requests": "600Mi",
     "memory-limits": "600Mi",
     "node_affinity": [
       "tb-cloud-vm-8-1",
-      "tb-cloud-vm-8-2"
+      "tb-cloud-vm-8-2",
+      "tb-cloud-vm-8-3"
     ]
   },
   "detection": {
@@ -151,10 +152,11 @@
     "memory-limits": "900Mi",
     "cpu-requests": "900m",
     "cpu-limits": "900m",
-    "replicas": 1,
+    "replicas": 7,
     "node_affinity": [
       "tb-cloud-vm-8-1",
-      "tb-cloud-vm-8-2"
+      "tb-cloud-vm-8-2",
+      "tb-cloud-vm-8-3"
     ]
   },
   "machine-learning": {
@@ -202,10 +204,11 @@
     "memory-limits": "1900Mi",
     "cpu-requests": "1900m",
     "cpu-limits": "1900m",
-    "replicas": 1,
+    "replicas": 7,
     "node_affinity": [
       "tb-cloud-vm-8-1",
-      "tb-cloud-vm-8-2"
+      "tb-cloud-vm-8-2",
+      "tb-cloud-vm-8-3"
     ]
   },
   "db": {
@@ -242,14 +245,15 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "replicas": 1,
+    "replicas": 7,
     "cpu-requests": "600m",
     "cpu-limits": "600m",
     "memory-requests": "600Mi",
     "memory-limits": "600Mi",
     "node_affinity": [
       "tb-cloud-vm-8-1",
-      "tb-cloud-vm-8-2"
+      "tb-cloud-vm-8-2",
+      "tb-cloud-vm-8-3"
     ]
   },
   "probeclient": {

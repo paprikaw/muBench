@@ -13,8 +13,8 @@ replicaCnt = args.replicaCnt
 layer = args.layer
 workDir = "/home/ubuntu/muBench"
 
-cloud_node_list = ["tb-cloud-vm-8-1", "tb-cloud-vm-8-2"]
-edge_node_list = ["tb-edge-vm-4-1", "tb-edge-vm-4-2", "tb-edge-vm-2-1", "tb-edge-vm-2-2"]
+cloud_node_list = ["tb-cloud-vm-8-1", "tb-cloud-vm-8-2", "tb-cloud-vm-8-3"]
+edge_node_list = ["tb-edge-vm-4-1", "tb-edge-vm-4-2", "tb-edge-vm-4-3", "tb-edge-vm-2-1", "tb-edge-vm-2-2", "tb-edge-vm-2-3"]
 all_node_list = cloud_node_list + edge_node_list
 # 定义JSON模板
 RunnerTemplate = '''
