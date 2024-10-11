@@ -57,12 +57,6 @@
         "services": [
           "detection"
         ]
-      },
-      {
-        "seq_len": 1,
-        "services": [
-          "machine-learning"
-        ]
       }
     ],
     "internal_service": {
@@ -107,7 +101,9 @@
     "external_services": [
       {
         "seq_len": 1,
-        "services": []
+        "services": [
+          "machine-learning"
+        ]
       }
     ],
     "internal_service": {

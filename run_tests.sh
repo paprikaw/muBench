@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-python Benchmarks/Runner/Runner.py -c Configs/RunnerParameters.json
+python Benchmarks/Runner/Runner.py -c tmp/runner_parameters.json

@@ -1,0 +1,17 @@
+{
+  "K8sParameters": {
+    "prefix_yaml_file": "MicroServiceDeployment",
+    "namespace": "default",
+    "image": "paprikaw/mubench:dev",
+    "cluster_domain": "cluster",
+    "path": "/api/v1",
+    "dns-resolver": "kube-dns.kube-system.svc.cluster.local",
+    "scheduler-name": "default-scheduler",
+    "sleep": 0,
+    "nginx-gw": true,
+    "nginx-svc-type": "NodePort"
+  },
+  "InternalServiceFilePath": "CustomFunctions",
+  "OutputPath": "./",
+  "WorkModelPath": "generated_workmodel.json"
+}

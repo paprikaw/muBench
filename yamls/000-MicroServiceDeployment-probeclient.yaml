@@ -1,26 +1,26 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{NAMESPACE}}
+  name: probeclient
+  namespace: default
   labels:
     zone: default
-    app: {{SERVICE_NAME}}
-    deployment: {{DEPLOYMENT_NAME}}
+    app: probeclient
+    deployment: probe
     version: "1.0"
   annotations:
     something: something
 spec:
   selector:
     matchLabels:
-      app: {{SERVICE_NAME}}
-  replicas: {{REPLICAS}}
+      app: probeclient
+  replicas: 1
   template:
     metadata:
       labels:
         zone: default
-        app: {{SERVICE_NAME}}
-        deployment: {{DEPLOYMENT_NAME}}
+        app: probeclient
+        deployment: probe
         version: "1.0"
         prometheus.io/scrape: 'true'
       annotations:
@@ -28,13 +28,25 @@ spec:
         prometheus.io/port: '8080'
         controller.kubernetes.io/pod-deletion-cost: '1000'
     spec:
-      {{NODE_TOLERATION}}
+      tolerations:
+      - effect: NoSchedule
+        key: tb-node-type
+        operator: Equal
+        value: client
       terminationGracePeriodSeconds : 3
-      {{NODE_AFFINITY}}
-      schedulerName: {{SCHEDULER_NAME}}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - tb-client-vm-2-1
+      schedulerName: default-scheduler
       containers:
-        - name: {{SERVICE_NAME}}
-          image: {{IMAGE}}
+        - name: probeclient
+          image: paprikaw/mubench:dev
           imagePullPolicy: Always
           ports:
             - name: http-mubpodport
@@ -48,7 +60,7 @@ spec:
               mountPath: /app/MSConfig/InternalServiceFunctions
           env:
             - name: APP
-              value: {{SERVICE_NAME}}
+              value: probeclient
             - name: EXECUTION_TIME_MAP
               valueFrom:
                 configMapKeyRef:
@@ -71,16 +83,19 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: PN
-              value: {{PN}}
+              value: '1'
             - name: TN
-              value: {{TN}}
+              value: '1'
             - name: CLOUD_LATENCY
               value: '0.05'
             - name: CLOUD_NODE_NAME_PREFIX
               value: 'tb-cloud'
-          resources: {{RESOURCES}}    
-        {{SIDECAR}}
-      {{POD_ANTIAFFINITY}}
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 100Mi    
+        
+      
 
       volumes:
         - name: podinfo
@@ -102,10 +117,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{NAMESPACE}}
+  name: probeclient
+  namespace: default
   labels:
-    app: {{SERVICE_NAME}}
+    app: probeclient
 spec:
   type: NodePort
   ports:
@@ -117,4 +132,4 @@ spec:
     targetPort: 51313
     name: grpc-mubserviceport
   selector:
-    app: {{SERVICE_NAME}}
+    app: probeclient

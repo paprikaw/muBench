@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: execution-time-config
+  namespace: default
+data:
+  json_data: |
+    {
+        "tb-cloud-vm-8-1": 0,
+        "tb-cloud-vm-8-2": 0,
+        "tb-edge-vm-4-1": 0.5,
+        "tb-edge-vm-4-2": 0.5,
+        "tb-client-vm-2-1": 0.5,
+        "tb-edge-vm-2-1": 1.0,
+        "tb-edge-vm-2-2": 1.0
+    }

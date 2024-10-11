@@ -7,7 +7,8 @@ from pprint import pprint
 K8s_YAML_BUILDER_PATH = os.path.dirname(os.path.abspath(__file__))
 
 SIDECAR_TEMPLATE = "- name: %s-sidecar\n          image: %s"
-NODE_AFFINITY_TEMPLATE = {'affinity': {'nodeAffinity': {'requiredDuringSchedulingIgnoredDuringExecution': {'nodeSelectorTerms': [{'matchExpressions': [{'key': 'kubernetes.io/hostname','operator': 'In','values': ['']}]}]}}}}
+REQUIRED_NODE_AFFINITY_TEMPLATE = {'affinity': {'nodeAffinity': {'requiredDuringSchedulingIgnoredDuringExecution': {'nodeSelectorTerms': [{'matchExpressions': [{'key': 'kubernetes.io/hostname','operator': 'In','values': ['']}]}]}}}}
+PREFERRED_NODE_AFFINITY_TEMPLATE = {'affinity': {'nodeAffinity': {'preferredDuringSchedulingIgnoredDuringExecution': [{'weight': 1,'preference': {'matchExpressions': [{'key': 'kubernetes.io/hostname','operator': 'In','values': ['']}]}}]}}}
 NODE_TOLERATION_TEMPLATE = {'tolerations': [{'key': 'tb-node-type','operator': 'Equal','value': 'client','effect': 'NoSchedule'}]}
 POD_ANTIAFFINITI_TEMPLATE = {'affinity':{'podAntiAffinity':{'requiredDuringSchedulingIgnoredDuringExecution':[{'labelSelector':{'matchExpressions':[{'key':'app','operator':'In','values':['']}]},'topologyKey':'kubernetes.io/hostname'}]}}}
 
@@ -67,8 +68,12 @@ def create_deployment_yaml_files(workmodel, k8s_parameters, nfs, output_path):
             else:
                 f = f.replace("{{REPLICAS}}", "1")
             if "node_affinity" in workmodel[service].keys():
-                NODE_AFFINITY_TEMPLATE_TO_ADD = NODE_AFFINITY_TEMPLATE
-                NODE_AFFINITY_TEMPLATE_TO_ADD['affinity']['nodeAffinity']['requiredDuringSchedulingIgnoredDuringExecution']['nodeSelectorTerms'][0]['matchExpressions'][0].update({"values" : workmodel[service]["node_affinity"]})
+                if "affinity_required" in workmodel[service].keys() and workmodel[service]["affinity_required"] == True:
+                    NODE_AFFINITY_TEMPLATE_TO_ADD = REQUIRED_NODE_AFFINITY_TEMPLATE
+                    NODE_AFFINITY_TEMPLATE_TO_ADD['affinity']['nodeAffinity']['requiredDuringSchedulingIgnoredDuringExecution']['nodeSelectorTerms'][0]['matchExpressions'][0].update({"values" : workmodel[service]["node_affinity"]})
+                else:
+                    NODE_AFFINITY_TEMPLATE_TO_ADD = PREFERRED_NODE_AFFINITY_TEMPLATE
+                    NODE_AFFINITY_TEMPLATE_TO_ADD['affinity']['nodeAffinity']['preferredDuringSchedulingIgnoredDuringExecution'][0]['preference']['matchExpressions'][0].update({"values" : workmodel[service]["node_affinity"]})
                 f = f.replace("{{NODE_AFFINITY}}", str(yaml.dump(NODE_AFFINITY_TEMPLATE_TO_ADD)).rstrip().replace('\n','\n      '))
             else:
                 f = f.replace("{{NODE_AFFINITY}}", "")

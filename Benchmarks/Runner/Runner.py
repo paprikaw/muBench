@@ -11,10 +11,22 @@ import os
 import shutil
 import importlib
 from pprint import pprint
-
+import signal
+pool = None
 import argparse
 import argcomplete
 
+shutdown_event = threading.Event()
+
+def signal_handler(signum, frame):
+    print(f"Received signal {signum}, shutting down...")
+    shutdown_event.set()
+    if pool:  # 确保 pool 已被创建
+        pool.shutdown(wait=True)
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 
 class Counter(object):
@@ -81,7 +93,7 @@ def job_assignment(v_pool, v_futures, event, stats, local_latency_stats):
         print("Error: %s" % err)
 
 def file_runner(workload=None):
-    global start_time, stats, local_latency_stats
+    global start_time, stats, local_latency_stats, pool
 
     stats = list()
     print("###############################################")
@@ -129,7 +141,7 @@ def file_runner(workload=None):
         run_after_workload(args)
 
 def greedy_runner():
-    global start_time, stats, local_latency_stats, runner_parameters
+    global start_time, stats, local_latency_stats, runner_parameters, pool
 
     if 'ingress_service' in runner_parameters.keys():
         srv=runner_parameters['ingress_service']
@@ -179,7 +191,7 @@ def greedy_runner():
         run_after_workload(args)
 
 def periodic_runner():
-    global start_time, stats, local_latency_stats, runner_parameters, threads
+    global start_time, stats, local_latency_stats, runner_parameters, threads, pool
     if 'rate' in runner_parameters.keys():
         rate=runner_parameters['rate']
     else:
@@ -308,7 +320,6 @@ if runner_type=="greedy":
     greedy_runner()
     with open(f"{output_path}/{result_file}.txt", "w") as f:
         f.writelines("\n".join(stats))
-
 elif runner_type=="periodic": 
     periodic_runner()
     with open(f"{output_path}/{result_file}.txt", "w") as f:

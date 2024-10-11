@@ -40,7 +40,7 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "replicas": 1,
+    "replicas": 2,
     "cpu-requests": "600m",
     "cpu-limits": "600m",
     "memory-requests": "600Mi",
@@ -214,7 +214,7 @@
           "memory_io": 100
         },
         "disk_stress": {
-          "run": true,
+          "run": false,
           "tmp_file_name": "mubtestfile.txt",
           "disk_write_block_count": 10,
           "disk_write_block_size": 1024
@@ -233,14 +233,7 @@
     "cpu-requests": "600m",
     "cpu-limits": "600m",
     "memory-requests": "600Mi",
-    "memory-limits": "600Mi",
-    "node_affinity": [
-      "tb-edge-vm-4-1",
-      "tb-edge-vm-4-2",
-      "tb-edge-vm-2-1",
-      "tb-edge-vm-2-2"
-    ]
-
+    "memory-limits": "600Mi"
   },
   "probeclient": {
     "external_services": [

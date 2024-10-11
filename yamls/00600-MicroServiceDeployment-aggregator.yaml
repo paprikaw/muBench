@@ -1,26 +1,26 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{NAMESPACE}}
+  name: aggregator
+  namespace: default
   labels:
     zone: default
-    app: {{SERVICE_NAME}}
-    deployment: {{DEPLOYMENT_NAME}}
+    app: aggregator
+    deployment: mubench
     version: "1.0"
   annotations:
     something: something
 spec:
   selector:
     matchLabels:
-      app: {{SERVICE_NAME}}
-  replicas: {{REPLICAS}}
+      app: aggregator
+  replicas: 1
   template:
     metadata:
       labels:
         zone: default
-        app: {{SERVICE_NAME}}
-        deployment: {{DEPLOYMENT_NAME}}
+        app: aggregator
+        deployment: mubench
         version: "1.0"
         prometheus.io/scrape: 'true'
       annotations:
@@ -28,13 +28,23 @@ spec:
         prometheus.io/port: '8080'
         controller.kubernetes.io/pod-deletion-cost: '1000'
     spec:
-      {{NODE_TOLERATION}}
+      
       terminationGracePeriodSeconds : 3
-      {{NODE_AFFINITY}}
-      schedulerName: {{SCHEDULER_NAME}}
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - tb-cloud-vm-8-1
+                - tb-cloud-vm-8-2
+            weight: 1
+      schedulerName: default-scheduler
       containers:
-        - name: {{SERVICE_NAME}}
-          image: {{IMAGE}}
+        - name: aggregator
+          image: paprikaw/mubench:dev
           imagePullPolicy: Always
           ports:
             - name: http-mubpodport
@@ -48,7 +58,7 @@ spec:
               mountPath: /app/MSConfig/InternalServiceFunctions
           env:
             - name: APP
-              value: {{SERVICE_NAME}}
+              value: aggregator
             - name: EXECUTION_TIME_MAP
               valueFrom:
                 configMapKeyRef:
@@ -71,16 +81,22 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: PN
-              value: {{PN}}
+              value: '4'
             - name: TN
-              value: {{TN}}
+              value: '16'
             - name: CLOUD_LATENCY
               value: '0.05'
             - name: CLOUD_NODE_NAME_PREFIX
               value: 'tb-cloud'
-          resources: {{RESOURCES}}    
-        {{SIDECAR}}
-      {{POD_ANTIAFFINITY}}
+          resources: 
+            requests:
+              cpu: 600m
+              memory: 600Mi
+            limits:
+              cpu: 600m
+              memory: 600Mi    
+        
+      
 
       volumes:
         - name: podinfo
@@ -102,10 +118,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{NAMESPACE}}
+  name: aggregator
+  namespace: default
   labels:
-    app: {{SERVICE_NAME}}
+    app: aggregator
 spec:
   type: NodePort
   ports:
@@ -117,4 +133,4 @@ spec:
     targetPort: 51313
     name: grpc-mubserviceport
   selector:
-    app: {{SERVICE_NAME}}
+    app: aggregator
