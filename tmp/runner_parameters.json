@@ -5,10 +5,9 @@
       "tmp/generated_workload.json"
     ],
     "workload_rounds": 1,
-    "workload_type": "periodic",
-    "rate": 5,
+    "workload_type": "greedy",
     "workload_events": 50000,
-    "thread_pool_size": 20,
+    "thread_pool_size": 1,
     "result_file": "result",
     "ingress_service": "client"
   },

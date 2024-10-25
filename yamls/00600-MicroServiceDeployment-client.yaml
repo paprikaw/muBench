@@ -47,7 +47,6 @@ spec:
       containers:
         - name: client
           image: paprikaw/mubench:dev
-          imagePullPolicy: Always
           ports:
             - name: http-mubpodport
               containerPort: 8080

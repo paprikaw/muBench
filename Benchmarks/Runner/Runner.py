@@ -20,14 +20,15 @@ shutdown_event = threading.Event()
 
 def signal_handler(signum, frame):
     print(f"Received signal {signum}, shutting down...")
-    shutdown_event.set()
-    if pool:  # 确保 pool 已被创建
-        pool.shutdown(wait=True)
+    # shutdown_event.set()
+    # if pool:  # 确保 pool 已被创建
+    #     pool.shutdown(wait=True)
+    # isStopped = True
     sys.exit(0)
 
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
-
+isStopped = False
 
 class Counter(object):
     def __init__(self, start = 0):
@@ -58,7 +59,21 @@ def do_requests(event, stats, local_latency_stats):
         if runner_type=="greedy":
             pending_requests.increase()
         
-        r = requests.get(f"{ms_access_gateway}/{event['service']}")
+        max_retries = 100
+        timeout = 2 
+        for attempt in range(max_retries):
+            try:
+                r = requests.get(f"{ms_access_gateway}/{event['service']}", timeout=timeout)
+                if r.status_code == 200:
+                    break
+            except requests.exceptions.Timeout:
+                print(f"Request timed out, retrying... ({attempt + 1}/{max_retries})")
+                if attempt == max_retries - 1:
+                    raise
+            except requests.exceptions.RequestException as e:
+                print(f"Request failed: {e}")
+                raise
+        
         pending_requests.decrease()
         
         if r.status_code != 200:
@@ -141,7 +156,7 @@ def file_runner(workload=None):
         run_after_workload(args)
 
 def greedy_runner():
-    global start_time, stats, local_latency_stats, runner_parameters, pool
+    global start_time, stats, local_latency_stats, runner_parameters, pool, isStopped
 
     if 'ingress_service' in runner_parameters.keys():
         srv=runner_parameters['ingress_service']
@@ -161,10 +176,10 @@ def greedy_runner():
     slow_start_delay = 0.1
     # put every request in the thread pool scheduled at time 0 (in case with initial slow start spread to reduce initial concurrency)
     for i in range(workload_events):
-        if i < slow_start_end :
-            event_time =  i * slow_start_delay
-        s.enter(event_time, 1, job_assignment, argument=(pool, futures, event, stats, local_latency_stats))
-
+        # if i < slow_start_end :
+        #     event_time =  i * slow_start_delay
+        do_requests(event, stats, local_latency_stats)
+        # s.enter(event_time, 1, job_assignment, argument=(pool, futures, event, stats, local_latency_stats))
     start_time = time.time()
     print("Start Time:", datetime.now().strftime("%H:%M:%S.%f - %g/%m/%Y"))
     s.run()

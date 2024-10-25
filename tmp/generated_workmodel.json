@@ -98,7 +98,7 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "replicas": 7,
+    "replicas": 3,
     "cpu-requests": "600m",
     "cpu-limits": "600m",
     "memory-requests": "600Mi",
@@ -106,7 +106,10 @@
     "node_affinity": [
       "tb-cloud-vm-8-1",
       "tb-cloud-vm-8-2",
-      "tb-cloud-vm-8-3"
+      "tb-edge-vm-4-1",
+      "tb-edge-vm-4-2",
+      "tb-edge-vm-2-1",
+      "tb-edge-vm-2-2"
     ]
   },
   "detection": {
@@ -152,11 +155,14 @@
     "memory-limits": "900Mi",
     "cpu-requests": "900m",
     "cpu-limits": "900m",
-    "replicas": 7,
+    "replicas": 3,
     "node_affinity": [
       "tb-cloud-vm-8-1",
       "tb-cloud-vm-8-2",
-      "tb-cloud-vm-8-3"
+      "tb-edge-vm-4-1",
+      "tb-edge-vm-4-2",
+      "tb-edge-vm-2-1",
+      "tb-edge-vm-2-2"
     ]
   },
   "machine-learning": {
@@ -200,15 +206,18 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "memory-requests": "1900Mi",
-    "memory-limits": "1900Mi",
-    "cpu-requests": "1900m",
-    "cpu-limits": "1900m",
-    "replicas": 7,
+    "memory-requests": "1400Mi",
+    "memory-limits": "1400Mi",
+    "cpu-requests": "1400m",
+    "cpu-limits": "1400m",
+    "replicas": 3,
     "node_affinity": [
       "tb-cloud-vm-8-1",
       "tb-cloud-vm-8-2",
-      "tb-cloud-vm-8-3"
+      "tb-edge-vm-4-1",
+      "tb-edge-vm-4-2",
+      "tb-edge-vm-2-1",
+      "tb-edge-vm-2-2"
     ]
   },
   "db": {
@@ -245,109 +254,18 @@
     "request_method": "rest",
     "workers": 4,
     "threads": 16,
-    "replicas": 7,
-    "cpu-requests": "600m",
-    "cpu-limits": "600m",
-    "memory-requests": "600Mi",
-    "memory-limits": "600Mi",
+    "replicas": 3,
+    "cpu-requests": "400m",
+    "cpu-limits": "400m",
+    "memory-requests": "400Mi",
+    "memory-limits": "400Mi",
     "node_affinity": [
       "tb-cloud-vm-8-1",
       "tb-cloud-vm-8-2",
-      "tb-cloud-vm-8-3"
-    ]
-  },
-  "probeclient": {
-    "external_services": [
-      {
-        "seq_len": 1,
-        "services": [
-          "probeserver"
-        ]
-      }
-    ],
-    "internal_service": {
-      "loader": {
-        "cpu_stress": {
-          "run": false,
-          "range_complexity": [
-            3,
-            3
-          ],
-          "thread_pool_size": 1,
-          "trials": 1
-        },
-        "memory_stress": {
-          "run": false,
-          "memory_size": 100,
-          "memory_io": 100
-        },
-        "disk_stress": {
-          "run": false,
-          "tmp_file_name": "mubtestfile.txt",
-          "disk_write_block_count": 10,
-          "disk_write_block_size": 1024
-        },
-        "sleep_stress": {
-          "run": false,
-          "sleep_time": 0.01
-        },
-        "mean_bandwidth": 1
-      }
-    },
-    "request_method": "rest",
-    "workers": 1,
-    "threads": 1,
-    "replicas": 1,
-    "cpu-limits": "100m",
-    "memory-limits": "100Mi",
-    "is_client": true,
-    "is_probe": true,
-    "affinity_required": true,
-    "node_affinity": [
-      "tb-client-vm-2-1"
-    ]
-  },
-  "probeserver": {
-    "external_services": [],
-    "internal_service": {
-      "loader": {
-        "cpu_stress": {
-          "run": false,
-          "range_complexity": [
-            200,
-            200
-          ],
-          "thread_pool_size": 1,
-          "trials": 2
-        },
-        "memory_stress": {
-          "run": false,
-          "memory_size": 1000,
-          "memory_io": 1000
-        },
-        "disk_stress": {
-          "run": false,
-          "tmp_file_name": "mubtestfile.txt",
-          "disk_write_block_count": 10,
-          "disk_write_block_size": 1024
-        },
-        "sleep_stress": {
-          "run": false,
-          "sleep_time": 0.01
-        },
-        "mean_bandwidth": 10
-      }
-    },
-    "request_method": "rest",
-    "is_probe": true,
-    "workers": 1,
-    "threads": 1,
-    "replicas": 1,
-    "cpu-limits": "100m",
-    "memory-limits": "100Mi",
-    "affinity_required": true,
-    "node_affinity": [
-      "tb-cloud-vm-8-1"
+      "tb-edge-vm-4-1",
+      "tb-edge-vm-4-2",
+      "tb-edge-vm-2-1",
+      "tb-edge-vm-2-2"
     ]
   }
 }

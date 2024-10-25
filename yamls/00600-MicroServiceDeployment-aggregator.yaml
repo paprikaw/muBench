@@ -14,7 +14,7 @@ spec:
   selector:
     matchLabels:
       app: aggregator
-  replicas: 7
+  replicas: 3
   template:
     metadata:
       labels:
@@ -40,13 +40,15 @@ spec:
                 values:
                 - tb-cloud-vm-8-1
                 - tb-cloud-vm-8-2
-                - tb-cloud-vm-8-3
+                - tb-edge-vm-4-1
+                - tb-edge-vm-4-2
+                - tb-edge-vm-2-1
+                - tb-edge-vm-2-2
             weight: 1
       schedulerName: default-scheduler
       containers:
         - name: aggregator
           image: paprikaw/mubench:dev
-          imagePullPolicy: Always
           ports:
             - name: http-mubpodport
               containerPort: 8080

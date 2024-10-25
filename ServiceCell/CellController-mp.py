@@ -192,7 +192,7 @@ def start_worker():
         # Execute the internal service
         app.logger.info("*************** INTERNAL SERVICE STARTED ***************")
         start_local_processing = time.time()
-        body = internal_service_executer.run_internal_service() # TODO: This implementation is not supported for trace driven
+        internal_service_executer.run_internal_service() # TODO: This implementation is not supported for trace driven
         local_processing_latency = time.time() - start_local_processing
         # Apply the node specific overhead
         sleep_time = execution_time_map[NODE_NAME] * local_processing_latency
@@ -210,7 +210,7 @@ def start_worker():
         # Execute the external services
         start_external_request_processing = time.time()
         app.logger.info("*************** EXTERNAL SERVICES STARTED ***************")
-        
+        service_calling_start_time = time.time()
         if len(service_mesh_config) > 0:
             if len(trace)>0:
                 service_error_dict = run_external_service(service_mesh_config,globalDict['work_model'],query_string,trace[ID],app, jaeger_headers)
@@ -221,9 +221,10 @@ def start_worker():
                 app.logger.error("Error in request external services")
                 app.logger.error(service_error_dict)
                 return make_response(json.dumps({"message": "Error in external services request"}), 500)
+        service_calling_end_time = time.time()
         app.logger.info("############### EXTERNAL SERVICES FINISHED! ###############")
-
-        response = make_response(body)
+        service_calling_latency = service_calling_end_time - service_calling_start_time
+        response = make_response({"service_calling_latency": service_calling_latency})
         response.mimetype = "text/plain"
         EXTERNAL_PROCESSING.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
         EXTERNAL_PROCESSING_BUCKET.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
@@ -233,7 +234,6 @@ def start_worker():
 
         # Add trace context propagation headers to the response
         response.headers.update(jaeger_headers)
-
         return response
     except Exception as err:
         app.logger.error("Error in start_worker", err)
