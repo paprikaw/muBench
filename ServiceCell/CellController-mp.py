@@ -204,8 +204,7 @@ def start_worker():
         current_execution_time = local_processing_latency
         INTERNAL_PROCESSING.labels(ZONE, K8S_APP, request.method, request.path).observe(local_processing_latency*1000)
         INTERNAL_PROCESSING_BUCKET.labels(ZONE, K8S_APP, request.method, request.path).observe(local_processing_latency*1000)
-        RESPONSE_SIZE.labels(ZONE, K8S_APP, request.method, request.path, request.remote_addr, ID).observe(len(body))
-        app.logger.info("len(body): %d" % len(body))
+        RESPONSE_SIZE.labels(ZONE, K8S_APP, request.method, request.path, request.remote_addr, ID).observe(1)
         app.logger.info("############### INTERNAL SERVICE FINISHED! ###############")
         # Execute the external services
         start_external_request_processing = time.time()
@@ -224,7 +223,10 @@ def start_worker():
         service_calling_end_time = time.time()
         app.logger.info("############### EXTERNAL SERVICES FINISHED! ###############")
         service_calling_latency = service_calling_end_time - service_calling_start_time
-        response = make_response({"service_calling_latency": service_calling_latency})
+        response = make_response({
+            "service_calling_latency": service_calling_latency,
+            "timestamp": int(time.time())
+                                  })
         response.mimetype = "text/plain"
         EXTERNAL_PROCESSING.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
         EXTERNAL_PROCESSING_BUCKET.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
