@@ -221,12 +221,15 @@ def start_worker():
                 app.logger.error(service_error_dict)
                 return make_response(json.dumps({"message": "Error in external services request"}), 500)
         service_calling_end_time = time.time()
+        # 计算调用外部服务的延迟（以毫秒为单位）
+        service_calling_latency = (service_calling_end_time - service_calling_start_time) * 1000
+        # 获取当前的 Unix 时间戳（以毫秒为单位）
+        current_timestamp = int(time.time())
         app.logger.info("############### EXTERNAL SERVICES FINISHED! ###############")
-        service_calling_latency = service_calling_end_time - service_calling_start_time
         response = make_response({
             "service_calling_latency": service_calling_latency,
-            "timestamp": int(time.time())
-                                  })
+            "timestamp": current_timestamp
+        })
         response.mimetype = "text/plain"
         EXTERNAL_PROCESSING.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
         EXTERNAL_PROCESSING_BUCKET.labels(ZONE, K8S_APP, request.method, request.path).observe((time.time() - start_external_request_processing)*1000)
