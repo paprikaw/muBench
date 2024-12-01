@@ -245,9 +245,9 @@ def start_worker():
 def is_cloud(node_name: str) -> bool:
     return node_name.startswith(CLOUD_NODE_NAME_PREFIX)
 
-@app.route('/', methods=['GET'])
-def index():
-    return 'Hello World'
+@app.route('/rtt', methods=['GET'])
+def round_trip_time():
+    return ''
 
 @app.route('/execution_time', methods=['GET'])
 def metrics():
