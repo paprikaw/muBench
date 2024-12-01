@@ -46,7 +46,6 @@
     "memory-requests": "600Mi",
     "memory-limits": "600Mi",
     "is_client": true,
-    "affinity_required": true,
     "node_affinity": [
       "tb-client-vm-2-1"
     ]
@@ -57,12 +56,6 @@
         "seq_len": 1,
         "services": [
           "detection"
-        ]
-      },
-      {
-        "seq_len": 1,
-        "services": [
-          "machine-learning"
         ]
       }
     ],
@@ -116,7 +109,9 @@
     "external_services": [
       {
         "seq_len": 1,
-        "services": []
+        "services": [
+          "machine-learning"
+        ]
       }
     ],
     "internal_service": {
@@ -239,7 +234,7 @@
           "memory_io": 100
         },
         "disk_stress": {
-          "run": false,
+          "run": true,
           "tmp_file_name": "mubtestfile.txt",
           "disk_write_block_count": 10,
           "disk_write_block_size": 1024
