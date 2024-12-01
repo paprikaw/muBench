@@ -55,6 +55,7 @@ CLOUD_NODE_NAME_PREFIX = os.environ["CLOUD_NODE_NAME_PREFIX"] # Cloud Node Name 
 execution_time_map_json = os.environ.get("EXECUTION_TIME_MAP")
 
 current_execution_time = -1
+service_execution_times = []
 if not execution_time_map_json:
     raise ValueError("CONFIG_JSON environment variable is not set")
 
@@ -135,6 +136,8 @@ def start_worker():
     global internal_service_config 
     global InternalServiceExecutor
     global current_execution_time
+    global service_execution_times
+    cur_srv_execution_time = time.time()
     try:
         start_request_processing = time.time()
         app.logger.info('Request Received')
@@ -239,6 +242,7 @@ def start_worker():
 
         # Add trace context propagation headers to the response
         response.headers.update(jaeger_headers)
+        service_execution_times.append(time.time() - cur_srv_execution_time)
         return response
     except Exception as err:
         app.logger.error("Error in start_worker", err)
@@ -254,8 +258,10 @@ def round_trip_time():
 
 @app.route('/execution_time', methods=['GET'])
 def metrics():
-    global current_execution_time
-    return make_response(str(current_execution_time))
+    if len(service_execution_times) <= 20:
+        return make_response({"execution_times": service_execution_times})
+    else:
+        return make_response({"execution_times": service_execution_times[-20:]})
 
 # Custom Gunicorn application: https://docs.gunicorn.org/en/stable/custom.html
 class HttpServer(gunicorn.app.base.BaseApplication):
